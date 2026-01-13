@@ -1,9 +1,6 @@
 import { useState, useEffect, lazy, Suspense } from 'react';
 import api from '../api/axios';
 import MapaComunidad from '../components/MapaComunidad'; 
-// --- NUEVA IMPORTACIÓN ---
-import { toast } from 'sonner';
-// -------------------------
 
 function Home() {
   const [mascotas, setMascotas] = useState([]);
@@ -11,13 +8,14 @@ function Home() {
   const [busqueda, setBusqueda] = useState(''); 
   const [vista, setVista] = useState('lista'); 
   
-  const [modalData, setModalData] =({ isOpen: false, fotos: [], index: 0 });
+  const [modalData, setModalData] = useState({ isOpen: false, fotos: [], index: 0 });
   
   const [perfilSeleccionado, setPerfilSeleccionado] = useState(null);
 
   useEffect(() => {
     const obtenerMascotas = async () => {
       try {
+        // MEJORA: El backend debe devolver el objeto 'usuario' completo, no solo el ID
         const res = await api.get('/mascotas');
         setMascotas(res.data);
       } catch (error) { 
@@ -52,49 +50,10 @@ function Home() {
     }));
   };
 
-  // --- FUNCIÓN DE AVISTAMIENTO MEJORADA CON SONNER ---
   const handleAvistamiento = (pet) => {
-    toast.custom((t) => (
-      <div className="bg-white/95 backdrop-blur-xl border border-slate-200 p-5 rounded-[2.5rem] shadow-2xl flex flex-col items-center gap-4 min-w-[320px] animate-in slide-in-from-top-4 duration-500">
-        <div className="relative">
-          <img 
-            src={pet.fotos?.[0] || pet.fotoUrl} 
-            className="w-16 h-16 rounded-full object-cover border-4 border-orange-500 shadow-lg"
-            alt="pet"
-          />
-          <span className="absolute -bottom-1 -right-1 text-xl">📍</span>
-        </div>
-        
-        <div className="text-center">
-          <h3 className="font-black text-[12px] text-slate-900 uppercase tracking-tighter">¿Viste a {pet.nombre}?</h3>
-          <p className="text-[10px] text-slate-500 font-bold uppercase mt-1 leading-tight">
-            Enviaremos tu ubicación GPS al dueño <br/> para ayudar en el rescate.
-          </p>
-        </div>
+    const confirmacion = window.confirm(`¿Viste a ${pet.nombre} recién? Enviaremos tu ubicación actual al dueño por WhatsApp.`);
+    if (!confirmacion) return;
 
-        <div className="flex gap-2 w-full">
-          <button 
-            onClick={() => toast.dismiss(t)}
-            className="flex-1 bg-slate-100 text-slate-500 text-[9px] font-black py-3 rounded-2xl uppercase tracking-widest hover:bg-slate-200 transition-all"
-          >
-            Cancelar
-          </button>
-          <button 
-            onClick={() => {
-              toast.dismiss(t);
-              procesarEnvioUbicacion(pet);
-            }}
-            className="flex-1 bg-orange-600 text-white text-[9px] font-black py-3 rounded-2xl uppercase tracking-widest shadow-lg shadow-orange-200 hover:bg-orange-700 transition-all"
-          >
-            SÍ, ENVIAR
-          </button>
-        </div>
-      </div>
-    ), { duration: 15000 });
-  };
-
-  // Lógica de GPS separada para limpieza
-  const procesarEnvioUbicacion = (pet) => {
     const mensajeBase = `¡Hola! Acabo de ver a ${pet.nombre} que reportaste como perdido en TalaHuellas. `;
 
     if ("geolocation" in navigator) {
@@ -103,16 +62,9 @@ function Home() {
           const { latitude, longitude } = position.coords;
           const mapaUrl = `https://www.google.com/maps?q=${latitude},${longitude}`;
           const mensajeCompleto = `${mensajeBase} Estoy en esta ubicación: ${mapaUrl}`;
-          
-          toast.success(`UBICACIÓN ENVIADA`, {
-            description: `Se ha abierto WhatsApp para contactar al dueño.`,
-            icon: '✅'
-          });
-
           window.open(`https://wa.me/${pet.contacto?.telefono || pet.telefono}?text=${encodeURIComponent(mensajeCompleto)}`, '_blank');
         },
         () => {
-          toast.error("GPS desactivado", { description: "Se envió el mensaje sin coordenadas exactas." });
           window.open(`https://wa.me/${pet.contacto?.telefono || pet.telefono}?text=${encodeURIComponent(mensajeBase + " No pude compartir mi ubicación exacta, pero lo vi por aquí cerca.")}`, '_blank');
         }
       );
@@ -120,7 +72,6 @@ function Home() {
       window.open(`https://wa.me/${pet.contacto?.telefono || pet.telefono}?text=${encodeURIComponent(mensajeBase)}`, '_blank');
     }
   };
-  // ----------------------------------------------------
 
   const mascotasFiltradas = mascotas.filter(m => {
     const coincideTipo = filtro === 'Todos' || m.tipo === filtro;
@@ -244,9 +195,11 @@ function Home() {
                   <div>
                     <div className="flex justify-between items-start">
                       <h3 className="text-sm md:text-xl font-black text-slate-800 tracking-tighter uppercase truncate leading-tight">{pet.nombre}</h3>
+                      {/* ACCESO AL PERFIL SOCIAL */}
                       <button 
                         onClick={(e) => { 
                           e.stopPropagation(); 
+                          // Aseguramos que pet.usuario contenga los datos poblados
                           setPerfilSeleccionado(pet.usuario); 
                         }}
                         className="text-[7px] font-black text-orange-500 hover:underline uppercase tracking-tighter"
@@ -301,9 +254,9 @@ function Home() {
             <div className="flex flex-col items-center text-center">
               <div className="w-24 h-24 rounded-full border-4 border-orange-500 shadow-xl overflow-hidden mb-4 bg-slate-100 flex items-center justify-center">
                 {perfilSeleccionado.fotoPerfil ? (
-                    <img src={perfilSeleccionado.fotoPerfil} className="w-full h-full object-cover" alt="perfil" />
+                   <img src={perfilSeleccionado.fotoPerfil} className="w-full h-full object-cover" alt="perfil" />
                 ) : (
-                    <span className="text-3xl">👤</span>
+                   <span className="text-3xl">👤</span>
                 )}
               </div>
               <h2 className="text-2xl font-black text-slate-800 uppercase tracking-tighter leading-none">{perfilSeleccionado.nombre || "Vecino Anónimo"}</h2>
