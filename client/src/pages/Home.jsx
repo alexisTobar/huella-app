@@ -53,7 +53,8 @@ function Home() {
 
   const handleAvistamiento = (pet) => {
     toast.custom((t) => (
-      <div className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-5 rounded-[2.5rem] shadow-2xl flex flex-col items-center gap-4 min-w-[320px] animate-in slide-in-from-top-4 duration-500">
+      // Aquí usamos dark: para que la alerta también cambie
+      <div className="bg-white/95 dark:bg-slate-900 backdrop-blur-xl border border-slate-200 dark:border-slate-800 p-5 rounded-[2.5rem] shadow-2xl flex flex-col items-center gap-4 min-w-[320px] animate-in slide-in-from-top-4 duration-500">
         <div className="relative">
           <img 
             src={pet.fotos?.[0] || pet.fotoUrl} 
@@ -130,10 +131,11 @@ function Home() {
   });
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 max-w-7xl mx-auto px-3 md:px-4 pb-24 overflow-x-hidden font-sans text-slate-900 dark:text-white transition-colors duration-500">
+    // IMPORTANTE: Aquí NO forzamos clases fijas, dejamos que Tailwind use las globales
+    <div className="min-h-screen max-w-7xl mx-auto px-3 md:px-4 pb-24 overflow-x-hidden font-sans transition-colors duration-500 text-slate-900 dark:text-white">
       
       {/* 1. HERO SECTION */}
-      <div className="relative bg-slate-900 dark:bg-black rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-20 mb-8 md:mb-16 overflow-hidden shadow-2xl border border-white/5 mt-4 md:mt-6">
+      <div className="relative bg-slate-900 dark:bg-black rounded-[2rem] md:rounded-[3.5rem] p-6 md:p-20 mb-8 md:mb-16 overflow-hidden shadow-2xl border border-white/5 mt-4 md:mt-6 transition-colors duration-500">
         <div className="absolute top-0 right-0 w-full md:w-1/2 h-full bg-gradient-to-l from-orange-500/20 to-transparent md:skew-x-12 translate-x-0 md:translate-x-20 pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:grid md:grid-cols-2 gap-8 md:gap-10 items-center">
           <div className="animate-fade-in-left text-center md:text-left">
@@ -142,7 +144,7 @@ function Home() {
               Protegiendo a nuestros <br className="hidden md:block" />
               <span className="text-orange-500 underline decoration-white/10">mejores amigos.</span>
             </h1>
-            <p className="text-slate-400 dark:text-slate-300 text-xs md:text-lg font-medium mb-8 max-w-md mx-auto md:mx-0 leading-relaxed uppercase">Red ciudadana de reporte y rescate en la Provincia del Maipo.</p>
+            <p className="text-slate-400 text-xs md:text-lg font-medium mb-8 max-w-md mx-auto md:mx-0 leading-relaxed uppercase">Red ciudadana de reporte y rescate en la Provincia del Maipo.</p>
             
             <div className="flex justify-center md:justify-start gap-2 md:gap-4">
                <div className="bg-white/5 border border-white/10 p-3 md:p-4 rounded-2xl md:rounded-3xl backdrop-blur-md min-w-[80px] md:min-w-[120px]">
@@ -171,10 +173,10 @@ function Home() {
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-4 w-full md:w-auto">
             <h2 className="text-xl md:text-3xl font-black text-slate-800 dark:text-white tracking-tighter uppercase flex items-center gap-2 md:gap-3">
-              <span className="w-2 md:w-3 h-6 md:h-8 bg-orange-500 rounded-full"></span>Tablero
+              <span className="w-2 md:w-3 h-6 md:h-8 bg-orange-500 rounded-full transition-all"></span>Tablero
             </h2>
             
-            <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl shadow-inner">
+            <div className="flex bg-slate-100 dark:bg-slate-900 p-1 rounded-xl shadow-inner transition-colors">
               <button 
                 onClick={() => setVista('lista')}
                 className={`px-4 py-2 rounded-lg text-[9px] font-black uppercase transition-all ${vista === 'lista' ? 'bg-white dark:bg-slate-800 shadow-sm text-orange-600' : 'text-slate-400'}`}
@@ -222,7 +224,7 @@ function Home() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
           {mascotasFiltradas.length > 0 ? (
             mascotasFiltradas.map((pet) => (
-              <div key={pet._id} className="bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl dark:hover:shadow-orange-900/10 transition-all duration-300 group flex flex-col h-full">
+              <div key={pet._id} className="bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl dark:hover:shadow-orange-900/20 transition-all duration-300 group flex flex-col h-full">
                 <div 
                   className="relative h-36 sm:h-44 md:h-52 overflow-hidden cursor-zoom-in" 
                   onClick={() => setModalData({ isOpen: true, fotos: pet.fotos || [pet.fotoUrl], index: 0 })}
@@ -236,7 +238,7 @@ function Home() {
                   </div>
                 </div>
 
-                <div className="p-3 md:p-5 flex flex-col flex-grow gap-2 text-slate-800 dark:text-slate-100">
+                <div className="p-3 md:p-5 flex flex-col flex-grow gap-2">
                   <div>
                     <div className="flex justify-between items-start">
                       <h3 className="text-sm md:text-xl font-black text-slate-800 dark:text-white tracking-tighter uppercase truncate leading-tight">{pet.nombre}</h3>
@@ -273,9 +275,9 @@ function Home() {
               </div>
             ))
           ) : (
-            <div className="col-span-full py-20 text-center animate-fade-in">
+            <div className="col-span-full py-20 text-center animate-fade-in transition-opacity">
               <span className="text-5xl block mb-4">🕵️‍♂️</span>
-              <p className="font-black text-slate-400 uppercase tracking-widest text-xs">No hay resultados</p>
+              <p className="font-black text-slate-400 dark:text-slate-600 uppercase tracking-widest text-xs">No hay resultados</p>
             </div>
           )}
         </div>
@@ -288,10 +290,10 @@ function Home() {
         </div>
       )}
 
-      {/* --- MODAL DE PERFIL SOCIAL --- */}
+      {/* --- MODALES CON TRANSICIÓN DE COLOR --- */}
       {perfilSeleccionado && (
-        <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-900/80 dark:bg-black/90 backdrop-blur-sm animate-fade-in" onClick={() => setPerfilSeleccionado(null)}>
-          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl border border-slate-100 dark:border-slate-800 max-w-sm w-full relative transition-colors" onClick={e => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-900/80 dark:bg-black/90 backdrop-blur-sm animate-fade-in transition-colors" onClick={() => setPerfilSeleccionado(null)}>
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl border border-slate-100 dark:border-slate-800 max-w-sm w-full relative transition-all" onClick={e => e.stopPropagation()}>
             <button onClick={() => setPerfilSeleccionado(null)} className="absolute top-6 right-6 text-slate-300 dark:text-slate-600 hover:text-slate-900 dark:hover:text-white font-bold">✕</button>
             
             <div className="flex flex-col items-center text-center">
@@ -306,26 +308,17 @@ function Home() {
               <p className="text-orange-500 font-bold text-[10px] uppercase tracking-widest mt-2">Miembro de la Comunidad</p>
               
               <div className="grid grid-cols-3 gap-3 w-full mt-8">
-                <div className="bg-slate-50 dark:bg-slate-800 p-3 rounded-2xl">
+                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
                   <p className="text-lg font-black text-slate-800 dark:text-white">{perfilSeleccionado.reputacion || 0}</p>
                   <p className="text-[7px] font-black text-slate-400 dark:text-slate-500 uppercase">Puntos</p>
                 </div>
-                <div className="bg-slate-50 dark:bg-slate-800 p-3 rounded-2xl">
+                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
                   <p className="text-lg font-black text-slate-800 dark:text-white">{perfilSeleccionado.mascotasReportadas || 0}</p>
                   <p className="text-[7px] font-black text-slate-400 dark:text-slate-500 uppercase">Alertas</p>
                 </div>
-                <div className="bg-slate-50 dark:bg-slate-800 p-3 rounded-2xl">
+                <div className="bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl">
                   <p className="text-lg font-black text-slate-800 dark:text-white">{perfilSeleccionado.mascotasEncontradas || 0}</p>
                   <p className="text-[7px] font-black text-slate-400 dark:text-slate-500 uppercase">Rescates</p>
-                </div>
-              </div>
-
-              <div className="w-full mt-8 text-left">
-                <h3 className="text-[9px] font-black uppercase text-slate-400 dark:text-slate-500 mb-3 tracking-widest">Medallas Ganadas</h3>
-                <div className="flex flex-wrap gap-2">
-                  {perfilSeleccionado.reputacion >= 10 && <span className="bg-orange-50 dark:bg-orange-500/10 text-orange-600 px-3 py-1.5 rounded-full text-[9px] font-black uppercase border border-orange-100 dark:border-orange-900/50 transition-colors">🏅 Colaborador Activo</span>}
-                  {perfilSeleccionado.mascotasReportadas >= 1 && <span className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 px-3 py-1.5 rounded-full text-[9px] font-black uppercase border border-blue-100 dark:border-blue-900/50 transition-colors">📢 Primer Reporte</span>}
-                  <span className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-3 py-1.5 rounded-full text-[9px] font-black uppercase border border-slate-100 dark:border-slate-800 transition-colors">🏠 Nuevo Vecino</span>
                 </div>
               </div>
             </div>
