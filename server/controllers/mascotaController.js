@@ -2,18 +2,27 @@ const Mascota = require('../models/mascota');
 const Usuario = require('../models/usuario');
 const admin = require('firebase-admin');
 
-// 1. INICIALIZACIÓN DE FIREBASE ADMIN
-// Asegúrate de que el archivo firebase-key.json esté en la carpeta 'server'
+// 1. INICIALIZACIÓN DE FIREBASE ADMIN (MEJORADA PARA RENDER)
 try {
-    const serviceAccount = require("../firebase-key.json");
     if (!admin.apps.length) {
+        let serviceAccount;
+
+        // Si existe la variable de entorno en Render, la usamos
+        if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+            serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+        } else {
+            // Si no (estás en local), busca el archivo físico
+            serviceAccount = require("../firebase-key.json");
+        }
+
         admin.initializeApp({
             credential: admin.credential.cert(serviceAccount)
         });
         console.log("✅ Firebase Admin conectado correctamente");
     }
 } catch (error) {
-    console.error("❌ Error al cargar firebase-key.json:", error.message);
+    console.error("❌ Error al inicializar Firebase Admin:", error.message);
+    console.log("Asegúrate de configurar FIREBASE_SERVICE_ACCOUNT en Render o tener el JSON en local.");
 }
 
 exports.crearMascota = async (req, res) => {
@@ -53,14 +62,14 @@ exports.crearMascota = async (req, res) => {
             }
         });
 
-        // --- 🔔 NUEVO: ENVIAR NOTIFICACIONES PUSH A TODOS ---
+        // --- 🔔 ENVIAR NOTIFICACIONES PUSH A TODOS ---
         try {
-            // Buscamos todos los usuarios que tengan al menos un token
+            // Buscamos todos los usuarios que tengan al menos un token registrado
             const usuariosConToken = await Usuario.find({ 
                 pushTokens: { $exists: true, $not: { $size: 0 } } 
             });
 
-            // Creamos una sola lista con todos los tokens de todos los vecinos
+            // Creamos una lista plana con todos los tokens encontrados
             const todosLosTokens = usuariosConToken.flatMap(u => u.pushTokens);
 
             if (todosLosTokens.length > 0) {
@@ -69,16 +78,17 @@ exports.crearMascota = async (req, res) => {
                         title: `🚨 NUEVA ALERTA: ${categoria.toUpperCase()}`,
                         body: `Se ha reportado un ${tipo} (${nombre || 'Sin nombre'}) en ${comuna}. ¡Ayúdanos a encontrarlo!`,
                     },
-                    // Usamos sendEachForMulticast para enviar a muchos a la vez
                     tokens: todosLosTokens,
                 };
 
                 const response = await admin.messaging().sendEachForMulticast(mensaje);
-                console.log(`📢 Notificaciones enviadas: ${response.successCount} exitosas, ${response.failureCount} fallidas`);
+                console.log(`📢 Notificaciones: ${response.successCount} enviadas, ${response.failureCount} fallidas`);
+            } else {
+                console.log("ℹ️ No hay tokens registrados para enviar notificaciones.");
             }
         } catch (pushError) {
             console.error("⚠️ Error al enviar notificaciones push:", pushError);
-            // No detenemos el proceso si fallan las notificaciones
+            // No detenemos la respuesta al cliente si falla el envío de notificaciones
         }
 
         res.status(201).json(guardado);
