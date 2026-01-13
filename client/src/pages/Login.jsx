@@ -61,15 +61,15 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen py-10 px-4 flex items-center justify-center relative overflow-hidden bg-slate-50">
+    <div className="min-h-screen py-10 px-4 flex items-center justify-center relative overflow-hidden bg-slate-50 dark:bg-slate-950 transition-colors duration-500">
       
       {/* MEJORA: FONDO DE ANIMALITOS DIFUMINADO PROFESIONAL */}
-      <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/paws.png')` }}></div>
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-200/40 via-transparent to-slate-100/30 z-0 blur-3xl"></div>
+      <div className="absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.01] pointer-events-none" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/paws.png')` }}></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-200/40 dark:from-orange-500/5 via-transparent to-slate-100/30 z-0 blur-3xl"></div>
 
-      <div className="max-w-4xl w-full bg-white rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100 flex flex-col md:flex-row min-h-[600px] relative z-10">
+      <div className="max-w-4xl w-full bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row min-h-[600px] relative z-10">
         
-        <div className="md:w-1/2 bg-slate-900 p-12 text-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/5 relative">
+        <div className="md:w-1/2 bg-slate-900 dark:bg-black p-12 text-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/5 relative">
           {/* Decoración lateral */}
           <div className="absolute top-0 right-0 w-full h-full bg-orange-500/5 skew-x-12 translate-x-10 pointer-events-none"></div>
           
@@ -77,7 +77,7 @@ function Login() {
           <h2 className="text-4xl font-black leading-tight mb-4 tracking-tighter uppercase relative z-10">
             {isRegistro ? 'Crea tu \nCuenta.' : 'Ingreso \nPortal.'}
           </h2>
-          <p className="text-slate-400 text-xs font-bold uppercase tracking-widest leading-relaxed relative z-10">
+          <p className="text-slate-400 dark:text-slate-500 text-xs font-bold uppercase tracking-widest leading-relaxed relative z-10">
             {isRegistro ? 'Sé parte de la red de cuidado animal más grande del Maipo.' : 'Bienvenido de vuelta a TalaHuellas.'}
           </p>
           
@@ -89,29 +89,29 @@ function Login() {
           <span className="absolute -bottom-10 -left-10 text-9xl opacity-5 rotate-12 pointer-events-none">🐾</span>
         </div>
 
-        <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center bg-white/50 backdrop-blur-sm">
+        <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
           <form onSubmit={handleSubmit} className="space-y-6">
             {isRegistro && (
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Nombre</label>
-                <input type="text" required className="w-full px-4 bg-slate-50 border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 transition-all shadow-sm rounded-xl"
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] ml-1">Nombre</label>
+                <input type="text" required className="w-full px-4 bg-slate-50 dark:bg-slate-800 border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 dark:text-white transition-all shadow-sm rounded-xl"
                   onChange={e => setFormData({...formData, nombre: e.target.value})} />
               </div>
             )}
             
             <div className="space-y-2">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Email</label>
-              <input type="email" required className="w-full px-4 bg-slate-50 border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 transition-all shadow-sm rounded-xl"
+              <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] ml-1">Email</label>
+              <input type="email" required className="w-full px-4 bg-slate-50 dark:bg-slate-800 border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 dark:text-white transition-all shadow-sm rounded-xl"
                 onChange={e => setFormData({...formData, email: e.target.value})} />
             </div>
 
             <div className="space-y-2 relative">
-              <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">Contraseña</label>
-              <input type="password" required className="w-full px-4 bg-slate-50 border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 transition-all shadow-sm rounded-xl"
+              <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] ml-1">Contraseña</label>
+              <input type="password" required className="w-full px-4 bg-slate-50 dark:bg-slate-800 border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 dark:text-white transition-all shadow-sm rounded-xl"
                 onChange={e => setFormData({...formData, password: e.target.value})} />
               {!isRegistro && (
                 <Link to="/olvide-password" 
-                  className="absolute right-0 top-0 text-[9px] font-black uppercase text-orange-500 tracking-widest hover:text-slate-900 transition-colors">
+                  className="absolute right-0 top-0 text-[9px] font-black uppercase text-orange-500 tracking-widest hover:text-slate-900 dark:hover:text-white transition-colors">
                   ¿Olvido?
                 </Link>
               )}
@@ -119,16 +119,16 @@ function Login() {
 
             {isRegistro && (
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">WhatsApp</label>
-                <div className="flex items-center gap-2 bg-slate-50 border-b-2 border-transparent focus-within:border-orange-500 px-4 transition-all shadow-sm rounded-xl">
-                  <span className="font-black text-slate-400 text-xs">+569</span>
-                  <input type="text" maxLength="8" placeholder="12345678" required className="flex-grow bg-transparent py-3 outline-none font-bold text-slate-800"
+                <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] ml-1">WhatsApp</label>
+                <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border-b-2 border-transparent focus-within:border-orange-500 px-4 transition-all shadow-sm rounded-xl">
+                  <span className="font-black text-slate-400 dark:text-slate-500 text-xs">+569</span>
+                  <input type="text" maxLength="8" placeholder="12345678" required className="flex-grow bg-transparent py-3 outline-none font-bold text-slate-800 dark:text-white"
                     onChange={e => setFormData({...formData, telefono: e.target.value})} />
                 </div>
               </div>
             )}
 
-            <button type="submit" className="w-full py-5 bg-slate-900 text-white font-black uppercase tracking-[0.3em] text-[10px] hover:bg-orange-600 transition-all shadow-xl active:scale-[0.98]">
+            <button type="submit" className="w-full py-5 bg-slate-900 dark:bg-orange-600 text-white font-black uppercase tracking-[0.3em] text-[10px] hover:bg-orange-600 dark:hover:bg-orange-500 transition-all shadow-xl active:scale-[0.98]">
               {isRegistro ? 'Registrarme' : 'Entrar a la App'}
             </button>
           </form>
@@ -136,8 +136,8 @@ function Login() {
           {!isRegistro && (
             <div className="mt-10">
               <div className="relative mb-6">
-                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100"></div></div>
-                <div className="relative flex justify-center"><span className="bg-white px-4 text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">Acceso Google</span></div>
+                <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100 dark:border-slate-800"></div></div>
+                <div className="relative flex justify-center"><span className="bg-white dark:bg-slate-900 px-4 text-[9px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.3em]">Acceso Google</span></div>
               </div>
               <div className="flex justify-center">
                 <GoogleLogin
@@ -161,14 +161,14 @@ function Login() {
                   }}
                   onError={() => toast.error("LOGIN FALLIDO")}
                   useOneTap
-                  theme="outline" shape="pill" size="large" width="100%"
+                  theme={darkMode ? "filled_black" : "outline"} shape="pill" size="large" width="100%"
                 />
               </div>
             </div>
           )}
 
           <button onClick={() => setIsRegistro(!isRegistro)}
-            className="mt-10 text-[10px] font-black text-slate-400 uppercase tracking-widest hover:text-slate-900 transition-colors w-full text-center active:scale-95">
+            className="mt-10 text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest hover:text-slate-900 dark:hover:text-white transition-colors w-full text-center active:scale-95">
             {isRegistro ? '¿Ya tienes cuenta? Ingresa' : '¿No tienes cuenta? Crea una'}
           </button>
         </div>
