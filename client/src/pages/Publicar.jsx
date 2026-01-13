@@ -1,30 +1,35 @@
 import { useState } from 'react';
 import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+// --- NUEVA IMPORTACIÓN ---
+import { toast } from 'sonner';
+// -------------------------
 
 function Publicar() {
   const [formData, setFormData] = useState({ 
     nombre: '', tipo: 'Perro', categoria: 'Perdida', telefono: '', ubicacion: '', comuna: 'Talagante', descripcion: '' 
   });
-  const [files, setFiles] = useState([]); // Ahora es un array
-  const [previews, setPreviews] = useState([]); // Para ver las fotos antes de subir
+  const [files, setFiles] = useState([]); 
+  const [previews, setPreviews] = useState([]); 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const comunasMaipo = ["Talagante", "Isla de Maipo", "El Monte", "Peñaflor", "Padre Hurtado"];
 
-  // Manejar selección de múltiples archivos
   const handleFileChange = (e) => {
     const selectedFiles = Array.from(e.target.files);
     if (files.length + selectedFiles.length > 3) {
-      alert("Solo puedes subir un máximo de 3 fotos");
+      // Alerta minimalista de error
+      toast.error("LÍMITE DE FOTOS", {
+        description: "Solo puedes subir un máximo de 3 imágenes.",
+        icon: '📸'
+      });
       return;
     }
 
     const newFiles = [...files, ...selectedFiles];
     setFiles(newFiles);
 
-    // Generar previsualizaciones
     const newPreviews = selectedFiles.map(file => URL.createObjectURL(file));
     setPreviews([...previews, ...newPreviews]);
   };
@@ -42,6 +47,9 @@ function Publicar() {
     if (!userJson) return navigate('/login');
     const user = JSON.parse(userJson);
 
+    // Feedback visual de carga
+    const loadingToast = toast.loading("SUBIENDO REPORTE A LA NUBE...");
+    
     setLoading(true);
     const data = new FormData();
     data.append('nombre', formData.nombre);
@@ -53,18 +61,46 @@ function Publicar() {
     data.append('descripcion', formData.descripcion);
     data.append('autor', user.id || user._id);
     
-    // Agregar las múltiples imágenes
     files.forEach(file => {
-      data.append('image', file); // 'image' debe coincidir con el upload.array('image', 3) del backend
+      data.append('image', file); 
     });
 
     try {
       await api.post('/mascotas', data);
-      alert('✅ Reporte creado con éxito');
-      navigate('/mis-publicaciones'); 
+      
+      toast.dismiss(loadingToast);
+
+      // --- ALERTA DE MEDALLA (PREMIUM) ---
+      toast.custom((t) => (
+        <div className="bg-slate-900 text-white p-8 rounded-[3rem] shadow-2xl flex flex-col items-center gap-4 text-center border border-white/10 animate-in zoom-in-95 duration-500">
+          <div className="w-20 h-20 bg-orange-500 rounded-full flex items-center justify-center text-4xl shadow-lg shadow-orange-500/40 animate-bounce">
+            🏅
+          </div>
+          <div>
+            <h3 className="font-black text-sm uppercase tracking-widest">¡REPORTE CREADO!</h3>
+            <p className="text-[10px] text-slate-400 font-bold uppercase mt-2 leading-relaxed">
+              Has ganado <span className="text-orange-500">+10 PUNTOS</span> de reputación <br/> por ayudar a la comunidad.
+            </p>
+          </div>
+          <button 
+            onClick={() => {
+              toast.dismiss(t);
+              navigate('/mis-publicaciones');
+            }}
+            className="bg-white text-slate-900 text-[10px] font-black px-8 py-3 rounded-2xl uppercase tracking-tighter"
+          >
+            VER MI PANEL
+          </button>
+        </div>
+      ), { duration: 6000, position: 'top-center' });
+
     } catch (error) {
+      toast.dismiss(loadingToast);
       console.error(error);
-      alert('❌ Error al subir el reporte');
+      toast.error("ERROR AL PUBLICAR", {
+        description: "Hubo un problema con la subida. Inténtalo de nuevo.",
+        icon: '❌'
+      });
     } finally { setLoading(false); }
   };
 
@@ -136,7 +172,6 @@ function Publicar() {
                 onChange={e => setFormData({...formData, telefono: e.target.value})} />
             </div>
 
-            {/* SECCIÓN DE MÚLTIPLES FOTOS */}
             <div className="space-y-4">
               <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2">Fotos (Máximo 3)</label>
               <div className="bg-orange-50 border-2 border-dashed border-orange-200 rounded-[2.5rem] p-8 text-center hover:bg-orange-100 transition-all cursor-pointer relative group">
@@ -147,7 +182,6 @@ function Publicar() {
                 </p>
               </div>
 
-              {/* Previsualizaciones */}
               <div className="flex gap-4 justify-center">
                 {previews.map((src, index) => (
                   <div key={index} className="relative w-20 h-20 rounded-2xl overflow-hidden shadow-md border-2 border-white">
@@ -159,7 +193,7 @@ function Publicar() {
             </div>
 
             <button type="submit" disabled={loading || files.length === 0} className="w-full py-7 rounded-[2.5rem] bg-slate-900 text-white font-black uppercase tracking-[0.3em] text-[10px] hover:bg-orange-600 transition-all shadow-2xl active:scale-95 disabled:opacity-50">
-              {loading ? 'PUBLICANDO...' : '🚀 PUBLICAR REPORTE'}
+              {loading ? 'SUBIENDO A LA NUBE...' : '🚀 PUBLICAR REPORTE'}
             </button>
           </form>
         </div>

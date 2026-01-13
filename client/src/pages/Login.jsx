@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import { GoogleLogin } from '@react-oauth/google';
+// --- NUEVA IMPORTACIÓN ---
+import { toast } from 'sonner';
+// -------------------------
 
 function Login() {
   const [isRegistro, setIsRegistro] = useState(false);
@@ -11,24 +14,49 @@ function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = isRegistro ? '/auth/registrar' : '/auth/login';
+    
+    // Alerta de carga minimalista
+    const loadingToast = toast.loading(isRegistro ? "CREANDO CUENTA..." : "INICIANDO SESIÓN...");
+
     try {
       const res = await api.post(endpoint, {
         ...formData,
-        // Si es registro, enviamos el teléfono con el prefijo
         telefono: isRegistro ? `+569${formData.telefono}` : formData.telefono
       });
+
+      toast.dismiss(loadingToast);
+
       if (!isRegistro) {
-        // Guardamos los datos del usuario en el navegador
         localStorage.setItem('usuarioTala', JSON.stringify(res.data.usuario));
-        alert(`¡Bienvenido de nuevo, ${res.data.usuario.nombre}!`);
-        navigate('/');
-        window.location.reload(); 
+        
+        // Alerta de éxito minimalista
+        toast.success(`¡HOLA, ${res.data.usuario.nombre.toUpperCase()}!`, {
+          description: 'Bienvenido de nuevo a la comunidad.',
+          icon: '🐾'
+        });
+
+        setTimeout(() => {
+          navigate('/');
+          window.location.reload(); 
+        }, 1500);
+
       } else {
-        alert(res.data.mensaje || "Cuenta creada con éxito. Por favor, revisa tu correo para verificarla.");
+        // Alerta de registro exitoso
+        toast.success("CUENTA CREADA", {
+          description: "Revisa tu correo para verificar tu cuenta.",
+          duration: 6000,
+          icon: '📧'
+        });
         setIsRegistro(false);
       }
     } catch (error) {
-      alert(error.response?.data?.mensaje || "Error en la operación");
+      toast.dismiss(loadingToast);
+      
+      // Alerta de error minimalista
+      toast.error("UPS, ALGO PASÓ", {
+        description: error.response?.data?.mensaje || "Error en la operación",
+        icon: '⚠️'
+      });
     }
   };
 
@@ -53,7 +81,6 @@ function Login() {
             {isRegistro ? 'Sé parte de la red de cuidado animal más grande del Maipo.' : 'Bienvenido de vuelta a TalaHuellas.'}
           </p>
           
-          {/* MEJORA: SOPORTE CON TU NÚMERO */}
           <div className="mt-20 pt-8 border-t border-white/10 relative z-10">
             <p className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">¿Problemas al entrar?</p>
             <p className="text-sm font-bold mt-2 text-orange-500">+569 77922875</p>
@@ -93,7 +120,6 @@ function Login() {
             {isRegistro && (
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-1">WhatsApp</label>
-                {/* MEJORA: PREFIJO FIJO +569 */}
                 <div className="flex items-center gap-2 bg-slate-50 border-b-2 border-transparent focus-within:border-orange-500 px-4 transition-all shadow-sm rounded-xl">
                   <span className="font-black text-slate-400 text-xs">+569</span>
                   <input type="text" maxLength="8" placeholder="12345678" required className="flex-grow bg-transparent py-3 outline-none font-bold text-slate-800"
@@ -116,16 +142,24 @@ function Login() {
               <div className="flex justify-center">
                 <GoogleLogin
                   onSuccess={async (res) => {
+                    const loadingGoogle = toast.loading("CONECTANDO CON GOOGLE...");
                     try {
                         const { data } = await api.post('/auth/google', { idToken: res.credential });
+                        toast.dismiss(loadingGoogle);
                         localStorage.setItem('usuarioTala', JSON.stringify(data.usuario));
-                        navigate('/');
-                        window.location.reload();
+                        
+                        toast.success("ACCESO EXITOSO", { icon: '🚀' });
+                        
+                        setTimeout(() => {
+                          navigate('/');
+                          window.location.reload();
+                        }, 1000);
                     } catch (err) {
-                        alert("Error en el acceso con Google");
+                        toast.dismiss(loadingGoogle);
+                        toast.error("ERROR GOOGLE", { description: "No pudimos validar tu cuenta." });
                     }
                   }}
-                  onError={() => alert('Login Fallido')}
+                  onError={() => toast.error("LOGIN FALLIDO")}
                   useOneTap
                   theme="outline" shape="pill" size="large" width="100%"
                 />

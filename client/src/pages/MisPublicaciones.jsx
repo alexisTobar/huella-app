@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+// --- NUEVA IMPORTACIÓN ---
+import { toast } from 'sonner';
+// -------------------------
 
 function MisPublicaciones() {
   const [mascotas, setMascotas] = useState([]);
@@ -36,28 +39,62 @@ function MisPublicaciones() {
     }
   };
 
-  const eliminarMascota = async (id) => {
-    if (window.confirm("¿Ya encontraste a tu mascota o quieres borrar el reporte?")) {
-      try {
-        await api.delete(`/mascotas/${id}`);
-        setMascotas(mascotas.filter(m => m._id !== id));
-        alert("✅ Reporte eliminado");
-      } catch (error) {
-        alert("❌ Error al eliminar");
-      }
-    }
+  // --- ELIMINAR MASCOTA CON ALERTA PERSONALIZADA ---
+  const eliminarMascota = (id) => {
+    toast.custom((t) => (
+      <div className="bg-white/95 backdrop-blur-xl border border-slate-200 p-6 rounded-[2.5rem] shadow-2xl flex flex-col items-center gap-4 text-center min-w-[320px]">
+        <span className="text-3xl">🐶</span>
+        <div>
+          <h3 className="font-black text-[12px] text-slate-900 uppercase tracking-widest">¿Borrar reporte?</h3>
+          <p className="text-[10px] text-slate-500 font-bold uppercase mt-1">Esta acción no se puede deshacer.</p>
+        </div>
+        <div className="flex gap-2 w-full">
+          <button onClick={() => toast.dismiss(t)} className="flex-1 bg-slate-100 text-slate-600 text-[9px] font-black py-3 rounded-2xl uppercase">Volver</button>
+          <button 
+            onClick={async () => {
+              toast.dismiss(t);
+              try {
+                await api.delete(`/mascotas/${id}`);
+                setMascotas(mascotas.filter(m => m._id !== id));
+                toast.success("REPORTE ELIMINADO", { icon: '✅' });
+              } catch (e) { toast.error("Error al eliminar"); }
+            }}
+            className="flex-1 bg-red-600 text-white text-[9px] font-black py-3 rounded-2xl uppercase shadow-lg shadow-red-100"
+          >
+            Eliminar
+          </button>
+        </div>
+      </div>
+    ), { duration: 8000 });
   };
 
-  const eliminarProducto = async (id) => {
-    if (window.confirm("¿Deseas eliminar este producto permanentemente?")) {
-      try {
-        await api.delete(`/productos/${id}`);
-        setProductos(productos.filter(p => p._id !== id));
-        alert("✅ Producto eliminado");
-      } catch (error) {
-        alert("❌ Error al eliminar");
-      }
-    }
+  // --- ELIMINAR PRODUCTO CON ALERTA PERSONALIZADA ---
+  const eliminarProducto = (id) => {
+    toast.custom((t) => (
+      <div className="bg-white/95 backdrop-blur-xl border border-slate-200 p-6 rounded-[2.5rem] shadow-2xl flex flex-col items-center gap-4 text-center min-w-[320px]">
+        <span className="text-3xl">📦</span>
+        <div>
+          <h3 className="font-black text-[12px] text-slate-900 uppercase tracking-widest">¿Eliminar producto?</h3>
+          <p className="text-[10px] text-slate-500 font-bold uppercase mt-1">El producto desaparecerá de la tienda.</p>
+        </div>
+        <div className="flex gap-2 w-full">
+          <button onClick={() => toast.dismiss(t)} className="flex-1 bg-slate-100 text-slate-600 text-[9px] font-black py-3 rounded-2xl uppercase">Volver</button>
+          <button 
+            onClick={async () => {
+              toast.dismiss(t);
+              try {
+                await api.delete(`/productos/${id}`);
+                setProductos(productos.filter(p => p._id !== id));
+                toast.success("PRODUCTO BORRADO");
+              } catch (e) { toast.error("Error al eliminar"); }
+            }}
+            className="flex-1 bg-slate-900 text-white text-[9px] font-black py-3 rounded-2xl uppercase"
+          >
+            Borrar
+          </button>
+        </div>
+      </div>
+    ), { duration: 8000 });
   };
 
   const toggleEstadoProducto = async (id, estadoActual) => {
@@ -67,8 +104,13 @@ function MisPublicaciones() {
       setProductos(productos.map(p => 
         p._id === id ? { ...p, vendido: nuevoEstado } : p
       ));
+      
+      toast.success(nuevoEstado ? "PRODUCTO VENDIDO 🎉" : "PRODUCTO RE-ACTIVADO 🔓", {
+        description: nuevoEstado ? "¡Felicidades por tu venta!" : "Ya está disponible en la tienda nuevamente.",
+        position: 'top-center'
+      });
     } catch (error) {
-      alert("❌ Error al actualizar estado");
+      toast.error("Error al actualizar");
     }
   };
 
@@ -84,17 +126,14 @@ function MisPublicaciones() {
   return (
     <div className="min-h-screen bg-[#f8fafc] relative overflow-hidden font-sans pb-32">
       
-      {/* MEJORA: FONDO DIFUMINADO Y TEXTURA */}
       <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/paws.png')` }}></div>
       <div className="absolute top-0 right-0 w-full h-full bg-gradient-to-br from-orange-100/20 via-transparent to-emerald-50/20 z-0 blur-3xl"></div>
 
       <div className="max-w-6xl mx-auto px-4 md:px-6 py-6 md:py-10 relative z-10">
         
-        {/* HEADER DEL PANEL - FULL RESPONSIVE */}
         <div className="bg-slate-900 rounded-[2rem] md:rounded-[3rem] p-8 md:p-16 text-white mb-10 md:mb-16 relative overflow-hidden shadow-2xl border border-white/5">
           <div className="absolute top-0 right-0 w-64 h-64 bg-orange-500/10 rounded-full blur-[80px] -mr-20 -mt-20"></div>
           <div className="relative z-10 flex flex-col md:flex-row items-center gap-6 text-center md:text-left">
-            {/* Foto de perfil de Google o Inicial */}
             <div className="w-20 h-20 md:w-24 md:h-24 rounded-full border-4 border-white/10 overflow-hidden shadow-2xl">
               <img 
                 src={user?.fotoPerfil || "https://i.postimg.cc/C5vpkC30/Copilot-20260110-194421.png"} 
@@ -113,7 +152,6 @@ function MisPublicaciones() {
           </div>
         </div>
 
-        {/* SECCIÓN MASCOTAS - Responsive Grid (2 cols móvil) */}
         <section className="mb-16 md:mb-20">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-xl md:text-3xl font-black text-slate-800 flex items-center gap-2 md:gap-4 uppercase tracking-tighter">
@@ -151,7 +189,6 @@ function MisPublicaciones() {
           )}
         </section>
 
-        {/* SECCIÓN PRODUCTOS - Responsive Grid (2 cols móvil) */}
         <section className="pb-10">
           <h2 className="text-xl md:text-3xl font-black text-slate-800 mb-8 flex items-center gap-2 md:gap-4 uppercase tracking-tighter">
             <span className="w-2 h-6 md:h-10 bg-emerald-500 rounded-full"></span> 
