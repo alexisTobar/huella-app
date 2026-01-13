@@ -67,6 +67,13 @@ function App() {
     const activarNotificaciones = async () => {
       // 1. Pedimos el token a Firebase
       const token = await solicitarPermisos();
+      
+      // --- LÍNEA AGREGADA PARA PRUEBAS: VER EL TOKEN EN CONSOLA ---
+      if (token) {
+        console.log("MI_TOKEN_PARA_FIREBASE:", token);
+      }
+      // ----------------------------------------------------------
+
       const userGuardado = localStorage.getItem('usuarioTala');
       
       // 2. Si tenemos token y el usuario está logueado, lo guardamos en la DB
