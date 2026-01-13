@@ -142,7 +142,7 @@ function Home() {
               Protegiendo a nuestros <br className="hidden md:block" />
               <span className="text-orange-500 underline decoration-white/10">mejores amigos.</span>
             </h1>
-            <p className="text-slate-400 dark:text-slate-500 text-xs md:text-lg font-medium mb-8 max-w-md mx-auto md:mx-0 leading-relaxed">Red ciudadana de reporte y rescate en la Provincia del Maipo.</p>
+            <p className="text-slate-400 dark:text-slate-300 text-xs md:text-lg font-medium mb-8 max-w-md mx-auto md:mx-0 leading-relaxed uppercase">Red ciudadana de reporte y rescate en la Provincia del Maipo.</p>
             
             <div className="flex justify-center md:justify-start gap-2 md:gap-4">
                <div className="bg-white/5 border border-white/10 p-3 md:p-4 rounded-2xl md:rounded-3xl backdrop-blur-md min-w-[80px] md:min-w-[120px]">
@@ -205,7 +205,7 @@ function Home() {
           </div>
         </div>
 
-        <div className="flex bg-white dark:bg-slate-900 p-1 md:p-1.5 rounded-xl md:rounded-2xl shadow-md border border-slate-100 dark:border-slate-800 overflow-x-auto max-w-full no-scrollbar">
+        <div className="flex bg-white dark:bg-slate-900 p-1 md:p-1.5 rounded-xl md:rounded-2xl shadow-md border border-slate-100 dark:border-slate-800 overflow-x-auto no-scrollbar max-w-full transition-colors">
           <div className="flex gap-1 min-w-max px-1">
             {['Todos', 'Perro', 'Gato', 'Ave', 'Otro'].map((cat) => (
               <button key={cat} onClick={() => setFiltro(cat)}
@@ -222,7 +222,7 @@ function Home() {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
           {mascotasFiltradas.length > 0 ? (
             mascotasFiltradas.map((pet) => (
-              <div key={pet._id} className="bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl dark:hover:shadow-orange-900/20 transition-all duration-300 group flex flex-col h-full">
+              <div key={pet._id} className="bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2rem] overflow-hidden border border-slate-100 dark:border-slate-800 shadow-sm hover:shadow-xl dark:hover:shadow-orange-900/10 transition-all duration-300 group flex flex-col h-full">
                 <div 
                   className="relative h-36 sm:h-44 md:h-52 overflow-hidden cursor-zoom-in" 
                   onClick={() => setModalData({ isOpen: true, fotos: pet.fotos || [pet.fotoUrl], index: 0 })}
@@ -291,7 +291,7 @@ function Home() {
       {/* --- MODAL DE PERFIL SOCIAL --- */}
       {perfilSeleccionado && (
         <div className="fixed inset-0 z-[300] flex items-center justify-center p-4 bg-slate-900/80 dark:bg-black/90 backdrop-blur-sm animate-fade-in" onClick={() => setPerfilSeleccionado(null)}>
-          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl border border-slate-100 dark:border-slate-800 max-w-sm w-full relative" onClick={e => e.stopPropagation()}>
+          <div className="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 shadow-2xl border border-slate-100 dark:border-slate-800 max-w-sm w-full relative transition-colors" onClick={e => e.stopPropagation()}>
             <button onClick={() => setPerfilSeleccionado(null)} className="absolute top-6 right-6 text-slate-300 dark:text-slate-600 hover:text-slate-900 dark:hover:text-white font-bold">✕</button>
             
             <div className="flex flex-col items-center text-center">
@@ -323,9 +323,9 @@ function Home() {
               <div className="w-full mt-8 text-left">
                 <h3 className="text-[9px] font-black uppercase text-slate-400 dark:text-slate-500 mb-3 tracking-widest">Medallas Ganadas</h3>
                 <div className="flex flex-wrap gap-2">
-                  {perfilSeleccionado.reputacion >= 10 && <span className="bg-orange-50 dark:bg-orange-500/10 text-orange-600 px-3 py-1.5 rounded-full text-[9px] font-black uppercase border border-orange-100 dark:border-orange-900/50">🏅 Colaborador Activo</span>}
-                  {perfilSeleccionado.mascotasReportadas >= 1 && <span className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 px-3 py-1.5 rounded-full text-[9px] font-black uppercase border border-blue-100 dark:border-blue-900/50">📢 Primer Reporte</span>}
-                  <span className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-3 py-1.5 rounded-full text-[9px] font-black uppercase border border-slate-100 dark:border-slate-800">🏠 Nuevo Vecino</span>
+                  {perfilSeleccionado.reputacion >= 10 && <span className="bg-orange-50 dark:bg-orange-500/10 text-orange-600 px-3 py-1.5 rounded-full text-[9px] font-black uppercase border border-orange-100 dark:border-orange-900/50 transition-colors">🏅 Colaborador Activo</span>}
+                  {perfilSeleccionado.mascotasReportadas >= 1 && <span className="bg-blue-50 dark:bg-blue-500/10 text-blue-600 px-3 py-1.5 rounded-full text-[9px] font-black uppercase border border-blue-100 dark:border-blue-900/50 transition-colors">📢 Primer Reporte</span>}
+                  <span className="bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 px-3 py-1.5 rounded-full text-[9px] font-black uppercase border border-slate-100 dark:border-slate-800 transition-colors">🏠 Nuevo Vecino</span>
                 </div>
               </div>
             </div>
@@ -335,14 +335,14 @@ function Home() {
 
       {/* --- MODAL CARRUSEL --- */}
       {modalData.isOpen && (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-2 md:p-4 bg-slate-900/95 dark:bg-black/98 backdrop-blur-md animate-fade-in" onClick={() => setModalData({ ...modalData, isOpen: false })}>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-2 md:p-4 bg-slate-900/95 dark:bg-black/98 backdrop-blur-md animate-fade-in transition-colors" onClick={() => setModalData({ ...modalData, isOpen: false })}>
           <button className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-900 dark:text-white text-xl md:text-2xl font-bold z-[210] shadow-xl">✕</button>
           <div className="relative max-w-4xl w-full flex flex-col items-center gap-4" onClick={e => e.stopPropagation()}>
             <div className="relative w-full flex justify-center items-center">
               {modalData.fotos.length > 1 && (
                 <button onClick={prevImagen} className="absolute left-2 md:-left-16 bg-white/10 hover:bg-orange-500 w-10 h-10 md:w-12 md:h-12 rounded-full text-white transition-all flex items-center justify-center text-lg z-[210]">❮</button>
               )}
-              <img src={modalData.fotos[modalData.index]} className="max-w-full max-h-[70vh] md:max-h-[75vh] rounded-2xl md:rounded-3xl shadow-2xl border-2 md:border-4 border-white/10 dark:border-white/5 object-contain shadow-orange-500/20" alt="Vista" />
+              <img src={modalData.fotos[modalData.index]} className="max-w-full max-h-[70vh] md:max-h-[75vh] rounded-2xl md:rounded-3xl shadow-2xl border-2 md:border-4 border-white/10 dark:border-white/5 object-contain shadow-orange-500/20 transition-all" alt="Vista" />
               {modalData.fotos.length > 1 && (
                 <button onClick={nextImagen} className="absolute right-2 md:-right-16 bg-white/10 hover:bg-orange-500 w-10 h-10 md:w-12 md:h-12 rounded-full text-white transition-all flex items-center justify-center text-lg z-[210]">❯</button>
               )}
