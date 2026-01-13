@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
 import api from '../api/axios';
 import { useNavigate } from 'react-router-dom';
+// --- NUEVA IMPORTACIÓN ---
+import { toast } from 'sonner';
+// -------------------------
 
 function Admin() {
   const [mascotas, setMascotas] = useState([]);
   const [productos, setProductos] = useState([]);
   const [usuarios, setUsuarios] = useState([]);
   const [tab, setTab] = useState('dashboard');
-  const [autorizado, setAutorizado] = useState(false); // Se activará solo
+  const [autorizado, setAutorizado] = useState(false); 
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const PASSWORD_SECRETA = "tala2024"; 
 
-  // 1. EFECTO DE AUTO-LOGIN PARA ADMINS
   useEffect(() => {
     const userGuardado = localStorage.getItem('usuarioTala');
     if (userGuardado) {
@@ -27,7 +29,6 @@ function Admin() {
     }
   }, [navigate]);
 
-  // 2. CARGA DE DATOS (Solo si está autorizado)
   useEffect(() => {
     if (autorizado) {
       fetchData();
@@ -47,16 +48,15 @@ function Admin() {
       setUsuarios(Array.isArray(resU.data) ? resU.data : []);
     } catch (error) {
       console.error("Error al cargar datos:", error);
+      toast.error("Error al sincronizar datos");
     } finally {
       setLoading(false);
     }
   };
 
-  // --- FUNCIÓN DE REPARACIÓN PARA EVITAR PANTALLA EN BLANCO ---
   const renderDatoSeguro = (dato) => {
     if (!dato) return 'N/A';
     if (typeof dato === 'object') {
-      // Si es un objeto de contacto, extraemos el teléfono, sino convertimos a texto
       return dato.telefono || dato.whatsapp || dato.email || JSON.stringify(dato);
     }
     return dato;
@@ -66,37 +66,83 @@ function Admin() {
     e.preventDefault();
     if (password === PASSWORD_SECRETA) {
       setAutorizado(true);
+      toast.success("ACCESO CONCEDIDO", { icon: '🔑' });
     } else {
-      alert("Contraseña incorrecta");
+      toast.error("CLAVE INCORRECTA", { description: "Verifica tus credenciales de administrador." });
     }
   };
 
-  const eliminarItem = async (id, tipo) => {
-    const rutaBase = tipo === 'mascotas' ? 'mascotas' : tipo === 'productos' ? 'productos' : 'auth/usuarios';
-    if (window.confirm(`¿Confirmas la eliminación permanente de este registro?`)) {
-      try {
-        await api.delete(`${rutaBase}/${id}`);
-        alert("✅ Eliminado correctamente");
-        fetchData();
-      } catch (error) {
-        alert(`❌ Error: ${error.response?.data?.mensaje || "No se pudo eliminar"}`);
-      }
-    }
+  // --- ELIMINAR ITEM CON ALERTA MINIMALISTA ---
+  const eliminarItem = (id, tipo) => {
+    toast.custom((t) => (
+      <div className="bg-white/95 backdrop-blur-xl border border-slate-200 p-6 rounded-[2.5rem] shadow-2xl flex flex-col items-center gap-4 text-center min-w-[320px]">
+        <span className="text-3xl">⚠️</span>
+        <div>
+          <h3 className="font-black text-[12px] text-slate-900 uppercase tracking-widest">¿Confirmar eliminación?</h3>
+          <p className="text-[10px] text-slate-500 font-bold uppercase mt-1">Esta acción es permanente y afectará a la base de datos.</p>
+        </div>
+        <div className="flex gap-2 w-full">
+          <button onClick={() => toast.dismiss(t)} className="flex-1 bg-slate-100 text-slate-600 text-[9px] font-black py-3 rounded-2xl uppercase">Cancelar</button>
+          <button 
+            onClick={async () => {
+              toast.dismiss(t);
+              const rutaBase = tipo === 'mascotas' ? 'mascotas' : tipo === 'productos' ? 'productos' : 'auth/usuarios';
+              const loadingToast = toast.loading("ELIMINANDO...");
+              try {
+                await api.delete(`${rutaBase}/${id}`);
+                toast.dismiss(loadingToast);
+                toast.success("REGISTRO ELIMINADO");
+                fetchData();
+              } catch (error) {
+                toast.dismiss(loadingToast);
+                toast.error("Error al eliminar");
+              }
+            }}
+            className="flex-1 bg-red-600 text-white text-[9px] font-black py-3 rounded-2xl uppercase shadow-lg shadow-red-100"
+          >
+            SÍ, ELIMINAR
+          </button>
+        </div>
+      </div>
+    ), { duration: 10000 });
   };
 
-  const cambiarRolUsuario = async (id, rolActual) => {
+  // --- CAMBIAR ROL CON ALERTA MINIMALISTA ---
+  const cambiarRolUsuario = (id, rolActual) => {
     const nuevoRol = rolActual === 'admin' ? 'user' : 'admin';
-    const msg = nuevoRol === 'admin' ? "¿Hacer ADMINISTRADOR a este usuario?" : "¿Quitar permisos de administrador?";
     
-    if (window.confirm(msg)) {
-      try {
-        await api.patch(`/auth/usuarios/rol/${id}`, { nuevoRol });
-        alert("✨ Rol actualizado correctamente");
-        fetchData(); 
-      } catch (error) {
-        alert("❌ Error al cambiar el rol");
-      }
-    }
+    toast.custom((t) => (
+      <div className="bg-slate-900 text-white p-6 rounded-[2.5rem] shadow-2xl flex flex-col items-center gap-4 text-center min-w-[320px] border border-white/10">
+        <span className="text-3xl">🛡️</span>
+        <div>
+          <h3 className="font-black text-[12px] uppercase tracking-widest">¿Modificar Rango?</h3>
+          <p className="text-[10px] text-slate-400 font-bold uppercase mt-1">
+            {nuevoRol === 'admin' ? "Darás acceso total a este usuario." : "Quitarás los permisos de administración."}
+          </p>
+        </div>
+        <div className="flex gap-2 w-full">
+          <button onClick={() => toast.dismiss(t)} className="flex-1 bg-white/10 text-white text-[9px] font-black py-3 rounded-2xl uppercase">Volver</button>
+          <button 
+            onClick={async () => {
+              toast.dismiss(t);
+              const loadToast = toast.loading("ACTUALIZANDO...");
+              try {
+                await api.patch(`/auth/usuarios/rol/${id}`, { nuevoRol });
+                toast.dismiss(loadToast);
+                toast.success("RANGO ACTUALIZADO");
+                fetchData(); 
+              } catch (error) {
+                toast.dismiss(loadToast);
+                toast.error("Error al cambiar rol");
+              }
+            }}
+            className="flex-1 bg-orange-500 text-white text-[9px] font-black py-3 rounded-2xl uppercase shadow-lg shadow-orange-500/20"
+          >
+            ACEPTAR
+          </button>
+        </div>
+      </div>
+    ), { duration: 8000 });
   };
 
   const StatCard = ({ title, value, icon, color }) => (
