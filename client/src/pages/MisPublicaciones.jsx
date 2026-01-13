@@ -115,7 +115,7 @@ function MisPublicaciones() {
   };
 
   if (loading) return (
-    <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] dark:bg-slate-950">
+    <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] dark:bg-slate-950 transition-colors">
       <div className="text-center animate-pulse">
         <div className="text-4xl mb-4">🐾</div>
         <p className="font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.3em] text-[10px]">Sincronizando panel...</p>

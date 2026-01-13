@@ -11,6 +11,9 @@ function Login() {
   const [formData, setFormData] = useState({ nombre: '', email: '', password: '', telefono: '' });
   const navigate = useNavigate();
 
+  // Detectamos si el sistema está en modo oscuro para el botón de Google
+  const isDarkMode = document.documentElement.classList.contains('dark');
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const endpoint = isRegistro ? '/auth/registrar' : '/auth/login';
@@ -67,9 +70,9 @@ function Login() {
       <div className="absolute inset-0 z-0 opacity-[0.03] dark:opacity-[0.01] pointer-events-none" style={{ backgroundImage: `url('https://www.transparenttextures.com/patterns/paws.png')` }}></div>
       <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-slate-200/40 dark:from-orange-500/5 via-transparent to-slate-100/30 z-0 blur-3xl"></div>
 
-      <div className="max-w-4xl w-full bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row min-h-[600px] relative z-10">
+      <div className="max-w-4xl w-full bg-white dark:bg-slate-900 rounded-[3rem] shadow-2xl overflow-hidden border border-slate-100 dark:border-slate-800 flex flex-col md:flex-row min-h-[600px] relative z-10 transition-colors duration-500">
         
-        <div className="md:w-1/2 bg-slate-900 dark:bg-black p-12 text-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/5 relative">
+        <div className="md:w-1/2 bg-slate-900 dark:bg-black p-12 text-white flex flex-col justify-center border-b md:border-b-0 md:border-r border-white/5 relative transition-colors duration-500">
           {/* Decoración lateral */}
           <div className="absolute top-0 right-0 w-full h-full bg-orange-500/5 skew-x-12 translate-x-10 pointer-events-none"></div>
           
@@ -89,25 +92,25 @@ function Login() {
           <span className="absolute -bottom-10 -left-10 text-9xl opacity-5 rotate-12 pointer-events-none">🐾</span>
         </div>
 
-        <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+        <div className="md:w-1/2 p-10 md:p-16 flex flex-col justify-center bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm transition-colors duration-500">
           <form onSubmit={handleSubmit} className="space-y-6">
             {isRegistro && (
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] ml-1">Nombre</label>
-                <input type="text" required className="w-full px-4 bg-slate-50 dark:bg-slate-800 border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 dark:text-white transition-all shadow-sm rounded-xl"
+                <input type="text" required className="w-full px-4 bg-slate-50 dark:bg-slate-800 dark:text-white border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 transition-all shadow-sm rounded-xl transition-colors duration-500"
                   onChange={e => setFormData({...formData, nombre: e.target.value})} />
               </div>
             )}
             
             <div className="space-y-2">
               <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] ml-1">Email</label>
-              <input type="email" required className="w-full px-4 bg-slate-50 dark:bg-slate-800 border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 dark:text-white transition-all shadow-sm rounded-xl"
+              <input type="email" required className="w-full px-4 bg-slate-50 dark:bg-slate-800 dark:text-white border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 transition-all shadow-sm rounded-xl transition-colors duration-500"
                 onChange={e => setFormData({...formData, email: e.target.value})} />
             </div>
 
             <div className="space-y-2 relative">
               <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] ml-1">Contraseña</label>
-              <input type="password" required className="w-full px-4 bg-slate-50 dark:bg-slate-800 border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 dark:text-white transition-all shadow-sm rounded-xl"
+              <input type="password" required className="w-full px-4 bg-slate-50 dark:bg-slate-800 dark:text-white border-b-2 border-transparent focus:border-orange-500 py-3 outline-none font-bold text-slate-800 transition-all shadow-sm rounded-xl transition-colors duration-500"
                 onChange={e => setFormData({...formData, password: e.target.value})} />
               {!isRegistro && (
                 <Link to="/olvide-password" 
@@ -120,7 +123,7 @@ function Login() {
             {isRegistro && (
               <div className="space-y-2">
                 <label className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em] ml-1">WhatsApp</label>
-                <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border-b-2 border-transparent focus-within:border-orange-500 px-4 transition-all shadow-sm rounded-xl">
+                <div className="flex items-center gap-2 bg-slate-50 dark:bg-slate-800 border-b-2 border-transparent focus-within:border-orange-500 px-4 transition-all shadow-sm rounded-xl transition-colors duration-500">
                   <span className="font-black text-slate-400 dark:text-slate-500 text-xs">+569</span>
                   <input type="text" maxLength="8" placeholder="12345678" required className="flex-grow bg-transparent py-3 outline-none font-bold text-slate-800 dark:text-white"
                     onChange={e => setFormData({...formData, telefono: e.target.value})} />
@@ -139,7 +142,7 @@ function Login() {
                 <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-slate-100 dark:border-slate-800"></div></div>
                 <div className="relative flex justify-center"><span className="bg-white dark:bg-slate-900 px-4 text-[9px] font-black text-slate-300 dark:text-slate-600 uppercase tracking-[0.3em]">Acceso Google</span></div>
               </div>
-              <div className="flex justify-center">
+              <div className="flex justify-center overflow-hidden rounded-full">
                 <GoogleLogin
                   onSuccess={async (res) => {
                     const loadingGoogle = toast.loading("CONECTANDO CON GOOGLE...");
@@ -161,7 +164,10 @@ function Login() {
                   }}
                   onError={() => toast.error("LOGIN FALLIDO")}
                   useOneTap
-                  theme={darkMode ? "filled_black" : "outline"} shape="pill" size="large" width="100%"
+                  theme={isDarkMode ? "filled_black" : "outline"} 
+                  shape="pill" 
+                  size="large" 
+                  width="100%"
                 />
               </div>
             </div>

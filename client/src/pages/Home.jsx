@@ -142,7 +142,7 @@ function Home() {
               Protegiendo a nuestros <br className="hidden md:block" />
               <span className="text-orange-500 underline decoration-white/10">mejores amigos.</span>
             </h1>
-            <p className="text-slate-400 text-xs md:text-lg font-medium mb-8 max-w-md mx-auto md:mx-0 leading-relaxed">Red ciudadana de reporte y rescate en la Provincia del Maipo.</p>
+            <p className="text-slate-400 dark:text-slate-500 text-xs md:text-lg font-medium mb-8 max-w-md mx-auto md:mx-0 leading-relaxed">Red ciudadana de reporte y rescate en la Provincia del Maipo.</p>
             
             <div className="flex justify-center md:justify-start gap-2 md:gap-4">
                <div className="bg-white/5 border border-white/10 p-3 md:p-4 rounded-2xl md:rounded-3xl backdrop-blur-md min-w-[80px] md:min-w-[120px]">
@@ -236,7 +236,7 @@ function Home() {
                   </div>
                 </div>
 
-                <div className="p-3 md:p-5 flex flex-col flex-grow gap-2">
+                <div className="p-3 md:p-5 flex flex-col flex-grow gap-2 text-slate-800 dark:text-slate-100">
                   <div>
                     <div className="flex justify-between items-start">
                       <h3 className="text-sm md:text-xl font-black text-slate-800 dark:text-white tracking-tighter uppercase truncate leading-tight">{pet.nombre}</h3>

@@ -8,7 +8,7 @@ function Landing() {
         <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-orange-100/50 dark:from-orange-900/20 via-transparent to-transparent pointer-events-none"></div>
         
         <div className="max-w-7xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 bg-white dark:bg-slate-900 px-6 py-2 rounded-full shadow-xl border border-slate-100 dark:border-slate-800 mb-10 animate-bounce-slow">
+          <div className="inline-flex items-center gap-2 bg-white dark:bg-slate-900 px-6 py-2 rounded-full shadow-xl dark:shadow-none border border-slate-100 dark:border-slate-800 mb-10 animate-bounce-slow">
             <span className="relative flex h-3 w-3">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-3 w-3 bg-orange-500"></span>
@@ -27,13 +27,13 @@ function Landing() {
           <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
             <Link 
               to="/reportes" 
-              className="bg-slate-900 dark:bg-orange-600 text-white px-12 py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] shadow-2xl hover:bg-orange-600 dark:hover:bg-orange-500 hover:scale-105 transition-all duration-500 w-full md:w-auto"
+              className="bg-slate-900 dark:bg-orange-600 text-white px-12 py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] shadow-2xl dark:shadow-none hover:bg-orange-600 dark:hover:bg-orange-500 hover:scale-105 transition-all duration-500 w-full md:w-auto"
             >
               Entrar al Tablero 🐾
             </Link>
             <Link 
               to="/publicar" 
-              className="bg-white dark:bg-transparent text-slate-900 dark:text-white border-2 border-slate-900 dark:border-white px-12 py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-slate-50 dark:hover:bg-white/10 transition-all w-full md:w-auto"
+              className="bg-white dark:bg-transparent text-slate-900 dark:text-white border-2 border-slate-900 dark:border-white px-12 py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-slate-50 dark:hover:bg-white/5 transition-all w-full md:w-auto"
             >
               Reportar Extravío
             </Link>
@@ -41,8 +41,8 @@ function Landing() {
         </div>
 
         {/* ELEMENTOS DECORATIVOS FLOATANTES */}
-        <div className="absolute bottom-20 left-10 text-8xl md:text-[12rem] opacity-20 dark:opacity-10 pointer-events-none select-none -rotate-12">🐕</div>
-        <div className="absolute top-40 right-10 text-8xl md:text-[10rem] opacity-20 dark:opacity-10 pointer-events-none select-none rotate-12">🐈</div>
+        <div className="absolute bottom-20 left-10 text-8xl md:text-[12rem] opacity-20 dark:opacity-10 pointer-events-none select-none -rotate-12 transition-opacity">🐕</div>
+        <div className="absolute top-40 right-10 text-8xl md:text-[10rem] opacity-20 dark:opacity-10 pointer-events-none select-none rotate-12 transition-opacity">🐈</div>
       </section>
 
       {/* SECCIÓN CARACTERÍSTICAS */}

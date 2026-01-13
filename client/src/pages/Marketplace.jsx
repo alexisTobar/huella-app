@@ -54,8 +54,8 @@ function Marketplace() {
     <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 max-w-7xl mx-auto px-4 pb-32 overflow-x-hidden font-sans transition-colors duration-500">
       
       {/* 1. HERO MARKETPLACE - Full Responsive */}
-      <div className="relative bg-emerald-900 dark:bg-black rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-16 mb-8 md:mb-12 overflow-hidden shadow-2xl border border-white/5 mt-4 md:mt-6">
-        <div className="absolute top-0 right-0 w-1/3 h-full bg-emerald-500 skew-x-12 translate-x-20 opacity-20 dark:opacity-10"></div>
+      <div className="relative bg-emerald-900 dark:bg-black rounded-[2.5rem] md:rounded-[3.5rem] p-6 md:p-16 mb-8 md:mb-12 overflow-hidden shadow-2xl border border-white/5 mt-4 md:mt-6 transition-colors duration-500">
+        <div className="absolute top-0 right-0 w-1/3 h-full bg-emerald-500 skew-x-12 translate-x-20 opacity-20 dark:opacity-10 pointer-events-none"></div>
         <div className="relative z-10 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-10 text-center md:text-left">
           <div className="max-w-xl">
             <span className="bg-emerald-500 text-white px-4 py-1.5 rounded-full text-[9px] md:text-[10px] font-black tracking-[0.3em] uppercase mb-4 md:mb-6 inline-block shadow-lg">
@@ -80,7 +80,7 @@ function Marketplace() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-8 md:mb-12">
         <div className="flex flex-col md:flex-row items-center gap-4 w-full md:w-auto">
           <h2 className="text-2xl md:text-4xl font-black text-slate-800 dark:text-white tracking-tighter uppercase flex items-center gap-3">
-            <span className="w-2 h-8 md:w-3 md:h-10 bg-emerald-500 rounded-full"></span>
+            <span className="w-2 h-8 md:w-3 md:h-10 bg-emerald-500 rounded-full transition-all"></span>
             Mercado
           </h2>
           
@@ -97,14 +97,14 @@ function Marketplace() {
             {busqueda && (
               <button 
                 onClick={() => setBusqueda('')} 
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-emerald-600 transition-colors font-bold"
+                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 transition-colors font-bold"
               >✕</button>
             )}
           </div>
         </div>
 
         {/* FILTROS CON SCROLL HORIZONTAL EN MÓVIL */}
-        <div className="flex bg-white dark:bg-slate-900 p-1.5 rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-x-auto no-scrollbar max-w-full">
+        <div className="flex bg-white dark:bg-slate-900 p-1.5 rounded-2xl md:rounded-3xl shadow-xl border border-slate-100 dark:border-slate-800 overflow-x-auto no-scrollbar max-w-full transition-colors duration-500">
           <div className="flex gap-1 min-w-max">
             {categorias.map((cat) => (
               <button
@@ -112,7 +112,7 @@ function Marketplace() {
                 onClick={() => setFiltro(cat)}
                 className={`px-5 md:px-8 py-2 md:py-3 rounded-xl md:rounded-2xl font-black text-[10px] md:text-xs uppercase tracking-widest transition-all ${
                   filtro === cat 
-                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200' 
+                  ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-200 dark:shadow-emerald-900/20' 
                   : 'text-slate-400 dark:text-slate-500 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-emerald-600'
                 }`}
               >
@@ -125,19 +125,19 @@ function Marketplace() {
 
       {/* 3. GRID DE PRODUCTOS - 2 columnas en móvil, 4 en desktop */}
       {productosFiltrados.length === 0 ? (
-        <div className="text-center py-16 md:py-24 bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-emerald-100 dark:border-emerald-900/50 mx-2 animate-fade-in">
+        <div className="text-center py-16 md:py-24 bg-white dark:bg-slate-900 rounded-[3rem] border-2 border-dashed border-emerald-100 dark:border-emerald-900/30 mx-2 animate-fade-in transition-colors duration-500">
           <span className="text-5xl md:text-7xl mb-4 block opacity-50">{busqueda ? '🔍' : '🛒'}</span>
-          <p className="text-slate-400 dark:text-slate-600 font-black uppercase tracking-widest text-sm md:text-xl">
+          <p className="text-slate-400 dark:text-slate-500 font-black uppercase tracking-widest text-sm md:text-xl px-4">
             {busqueda ? `No hay resultados para "${busqueda}"` : 'Sin stock por ahora'}
           </p>
           {busqueda && (
-            <button onClick={() => setBusqueda('')} className="mt-4 text-emerald-600 font-black uppercase text-[10px] tracking-widest hover:underline">Limpiar búsqueda</button>
+            <button onClick={() => setBusqueda('')} className="mt-4 text-emerald-600 dark:text-emerald-400 font-black uppercase text-[10px] tracking-widest hover:underline">Limpiar búsqueda</button>
           )}
         </div>
       ) : (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
           {productosFiltrados.map((prod) => (
-            <div key={prod._id} className="bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] p-2 md:p-4 border border-slate-100 dark:border-slate-800 shadow-lg hover:shadow-2xl dark:hover:shadow-emerald-900/10 transition-all duration-500 flex flex-col h-full group">
+            <div key={prod._id} className="bg-white dark:bg-slate-900 rounded-[1.5rem] md:rounded-[2.5rem] p-2 md:p-4 border border-slate-100 dark:border-slate-800 shadow-lg hover:shadow-2xl dark:hover:shadow-emerald-900/10 transition-all duration-500 flex flex-col h-full group overflow-hidden">
               
               <div 
                 className="h-40 md:h-64 rounded-[1.2rem] md:rounded-[2rem] overflow-hidden mb-3 md:mb-6 relative cursor-zoom-in"
@@ -165,11 +165,11 @@ function Marketplace() {
               </div>
 
               <div className="px-1 md:px-2 flex flex-col flex-grow">
-                <h3 className="text-xs md:text-xl font-black text-slate-800 dark:text-white leading-tight mb-2 md:mb-4 group-hover:text-emerald-600 transition-colors line-clamp-2 uppercase tracking-tighter h-8 md:h-14">
+                <h3 className="text-xs md:text-xl font-black text-slate-800 dark:text-white leading-tight mb-2 md:mb-4 group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors line-clamp-2 uppercase tracking-tighter h-8 md:h-14">
                   {prod.titulo}
                 </h3>
                 
-                <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 bg-emerald-50 dark:bg-emerald-900/20 p-2 md:p-3 rounded-xl md:rounded-2xl border border-emerald-100 dark:border-emerald-900/30 mt-auto">
+                <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 md:mb-6 bg-emerald-50 dark:bg-emerald-900/20 p-2 md:p-3 rounded-xl md:rounded-2xl border border-emerald-100 dark:border-emerald-900/30 mt-auto transition-colors">
                   <span className="text-[7px] md:text-[10px] font-black text-emerald-600 dark:text-emerald-500 uppercase tracking-widest">Precio</span>
                   <span className="text-sm md:text-2xl font-black text-emerald-700 dark:text-emerald-400">${Number(prod.precio).toLocaleString('es-CL')}</span>
                 </div>
@@ -191,7 +191,7 @@ function Marketplace() {
       {/* --- MODAL CARRUSEL - Full Responsive --- */}
       {modalData.isOpen && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-2 md:p-4 bg-slate-900/95 dark:bg-black/98 backdrop-blur-md animate-fade-in" onClick={() => setModalData({ ...modalData, isOpen: false })}>
-          <button className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-900 dark:text-white text-xl md:text-2xl font-bold shadow-2xl z-[210]">✕</button>
+          <button className="absolute top-4 right-4 md:top-6 md:right-6 w-10 h-10 md:w-12 md:h-12 bg-white dark:bg-slate-800 rounded-full flex items-center justify-center text-slate-900 dark:text-white text-xl md:text-2xl font-bold shadow-2xl z-[210] transition-colors">✕</button>
 
           <div className="relative max-w-4xl w-full flex flex-col items-center gap-4 md:gap-6" onClick={e => e.stopPropagation()}>
             <div className="relative w-full flex justify-center items-center">
@@ -199,7 +199,7 @@ function Marketplace() {
                 <button onClick={prevImagen} className="absolute left-2 md:-left-20 bg-white/10 hover:bg-emerald-500 w-10 h-10 md:w-14 md:h-14 rounded-full text-white transition-all flex items-center justify-center text-xl z-10">❮</button>
               )}
               
-              <img src={modalData.fotos[modalData.index]} className="max-w-full max-h-[70vh] md:max-h-[85vh] rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl border-2 md:border-4 border-white/10 dark:border-emerald-500/20 object-contain" alt="Producto" />
+              <img src={modalData.fotos[modalData.index]} className="max-w-full max-h-[70vh] md:max-h-[85vh] rounded-[1.5rem] md:rounded-[2.5rem] shadow-2xl border-2 md:border-4 border-white/10 dark:border-white/5 object-contain" alt="Producto" />
               
               {modalData.fotos.length > 1 && (
                 <button onClick={nextImagen} className="absolute right-2 md:-right-20 bg-white/10 hover:bg-emerald-500 w-10 h-10 md:w-14 md:h-14 rounded-full text-white transition-all flex items-center justify-center text-xl z-10">❯</button>
