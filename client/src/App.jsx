@@ -13,8 +13,9 @@ import VerificarCorreo from './pages/VerificarCorreo';
 import OlvidePassword from './pages/OlvidePassword';
 import ResetPassword from './pages/ResetPassword';
 
-// --- NUEVAS IMPORTACIONES PARA ALERTAS ---
+// --- NUEVAS IMPORTACIONES PARA ALERTAS Y FIREBASE ---
 import { Toaster, toast } from 'sonner';
+import { solicitarPermisos, alRecibirMensaje } from './firebase'; 
 // ------------------------------------------
 
 function NavLink({ to, children }) {
@@ -50,6 +51,7 @@ function App() {
     }
   };
 
+  // --- EFECTO PARA INICIALIZAR USUARIO Y CONTEO ---
   useEffect(() => {
     const userGuardado = localStorage.getItem('usuarioTala');
     if (userGuardado) {
@@ -59,6 +61,44 @@ function App() {
     const interval = setInterval(obtenerConteo, 30000);
     return () => clearInterval(interval);
   }, []);
+
+  // --- NUEVO EFECTO: GESTIÓN DE NOTIFICACIONES PUSH ---
+  useEffect(() => {
+    const activarNotificaciones = async () => {
+      // 1. Pedimos el token a Firebase
+      const token = await solicitarPermisos();
+      const userGuardado = localStorage.getItem('usuarioTala');
+      
+      // 2. Si tenemos token y el usuario está logueado, lo guardamos en la DB
+      if (token && userGuardado) {
+        const user = JSON.parse(userGuardado);
+        try {
+          await api.post('/auth/registrar-token', { 
+            userId: user.id || user._id, 
+            token: token 
+          });
+          console.log("🔔 Notificaciones sincronizadas");
+        } catch (err) {
+          console.error("Error al vincular token con el servidor", err);
+        }
+      }
+    };
+
+    activarNotificaciones();
+
+    // 3. Escuchar mensajes cuando la app está abierta (Primer Plano)
+    const unsubscribe = alRecibirMensaje((payload) => {
+      toast.info(payload.notification.title, {
+        description: payload.notification.body,
+        icon: '🔔',
+        duration: 8000,
+      });
+    });
+
+    return () => {
+      if (unsubscribe) unsubscribe();
+    };
+  }, [usuario]); // Se re-ejecuta si el usuario cambia (ej: al hacer login)
 
   // --- LOGOUT MEJORADO CON ALERTA MINIMALISTA ---
   const handleLogout = () => {
@@ -104,7 +144,6 @@ function App() {
 
       {/* HEADER RESPONSIVE */}
       <header className="bg-white/80 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-[100] shadow-sm">
-        {/* ... (Todo tu código de header se mantiene igual) ... */}
         <div className="max-w-7xl mx-auto px-4 md:px-6 h-20 md:h-24 flex justify-between items-center">
           
           <Link to="/" className="flex items-center gap-2 md:gap-4 group">
@@ -253,7 +292,6 @@ function App() {
         </div>
       </main>
 
-      {/* FOOTER */}
       <footer className="bg-white border-t border-slate-100 pt-10 md:pt-20 pb-10 mt-auto hidden sm:block">
         <div className="max-w-7xl mx-auto px-6 md:px-8 relative z-10">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12 md:mb-20 text-center md:text-left">

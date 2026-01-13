@@ -16,8 +16,10 @@ const usuarioSchema = new mongoose.Schema({
     mascotasReportadas: { type: Number, default: 0 },
     mascotasEncontradas: { type: Number, default: 0 },
     medallas: { type: [String], default: ['Nuevo Vecino 🏠'] },
+    // NUEVO CAMPO PARA NOTIFICACIONES PUSH
+    pushTokens: [{ type: String }], 
     fecha: { type: Date, default: Date.now }
 });
 
-// CAMBIO AQUÍ: Verificamos si el modelo ya existe antes de crearlo
+// Verificamos si el modelo ya existe antes de crearlo
 module.exports = mongoose.models.Usuario || mongoose.model('Usuario', usuarioSchema);
